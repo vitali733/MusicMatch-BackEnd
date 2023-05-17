@@ -51,8 +51,6 @@ const createUser = async(req, res, next) => {
 
 const getOneUser = async (req, res, next) => {
     try {
-        const { id } = req.userId;
-        console.log('id to update: ' + id)
         const foundUser = await UserCollection.findById(req.userId);
         res.status(200).json(foundUser)
     } catch (error) {
@@ -62,15 +60,15 @@ const getOneUser = async (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
     try{
-       
-        const   { firstName, lastName, address, postalCode } = req.body
+        const { firstName, lastName, address, postalCode } = req.body
+        const { userId } = req
         const updatedUser = await UserCollection.findByIdAndUpdate(
-            id, 
+            userId, 
             { firstName, lastName, address, postalCode },
             { new: true, runValidators: true }
         )
-        console.log('user has been updated: ' + id)
         return res.json(updatedUser)
+    
     } catch (error) {
        next(error)
     }
