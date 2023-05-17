@@ -18,7 +18,7 @@ app.use(cors())
 app.use(cookieParser())
 
 //Routes
-app.use('/', userRoutes)
+app.use('/users', userRoutes)
 
 //Error handling
 app.use(errorHandler)

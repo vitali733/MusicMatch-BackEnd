@@ -8,8 +8,7 @@ const userSchema = new Schema({
         required: [true , 'First Name is required']
     }, 
     lastName: {
-        type: String,
-        required: [true, 'Last Name is required']
+        type: String
     },
     email: {
         type: String,
@@ -25,7 +24,27 @@ const userSchema = new Schema({
         //on response the password wont come back
         select: false
     },
-
+    address: {
+        type: String
+    },
+    postalCode: {
+        type: String,
+        required: [true, 'POSTALCODE REQUIRED'],
+        match: [/^[0-9]{5}$/,'is not a valid postal code']
+    },
+    latitude: {
+        type: Number
+    },
+    longitude: {
+        type: Number
+    },
+    imgUrl: {
+        type: String
+    },
+    userDescription: {
+        type: String,
+        maxlength: 500
+    }
   });
 
   const UserCollection = mongoose.model('User', userSchema);
