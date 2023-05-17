@@ -1,5 +1,4 @@
 const express = require('express')
-const friesRoutes = require('./routes/friesRoutes.js')
 const userRoutes = require('./routes/userRoutes.js')
 const errorHandler = require('./middlewares/errorHandler.js')
 const app = express()
@@ -19,7 +18,6 @@ app.use(cors())
 app.use(cookieParser())
 
 //Routes
-app.use('/', friesRoutes)
 app.use('/', userRoutes)
 
 //Error handling
