@@ -3,9 +3,7 @@ const { Schema } = mongoose;
 
 const characteristicSchema = new Schema({
     // String is shorthand for {type: String}
-    characteristik: [{
-        name: String
-    }]
+    characteristics: []
   });
 
   const CharacteristicCollection = mongoose.model('Characteristic', characteristicSchema);
