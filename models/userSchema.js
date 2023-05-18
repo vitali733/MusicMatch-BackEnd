@@ -1,3 +1,4 @@
+const { SchemaType } = require('mongoose');
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
@@ -8,7 +9,8 @@ const userSchema = new Schema({
         required: [true , 'First Name is required']
     }, 
     lastName: {
-        type: String
+        type: String,
+        default: null
     },
     email: {
         type: String,
@@ -25,28 +27,46 @@ const userSchema = new Schema({
         select: false
     },
     address: {
-        type: String
+        type: String,
+        default: null
     },
     postalCode: {
         type: String,
-        required: [true, 'POSTALCODE REQUIRED'],
+        required: [true, 'postal code required'],
         match: [/^[0-9]{5}$/,'is not a valid postal code']
     },
     latitude: {
-        type: Number
+        type: Number,
+        default: null
     },
     longitude: {
-        type: Number
+        type: Number,
+        default: null
     },
     imgUrl: {
-        type: String
+        type: String,
+        default: null
     },
     userDescription: {
         type: String,
-        maxlength: 500
-    }
+        maxlength: 500,
+        default: null
+    },
+    interests: [{
+        name: String, description: String
+    }],
+    skills: [{
+        name: String, level: Number,  description: String
+    }],
+    bookMarks: [{
+        type: [Schema.Types.ObjectId, 'type is not a valid mongoDB object ID']
+    }],
+    settings: [{
+        distance: String, darkMode: Boolean
+    }]
   });
 
   const UserCollection = mongoose.model('User', userSchema);
 
   module.exports = UserCollection
+

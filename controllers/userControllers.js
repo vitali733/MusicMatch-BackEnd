@@ -25,9 +25,21 @@ const login = async (req, res, next) => {
     }
 }
 
+const logout = (req, res, next) => {
+    try {
+      res
+        .clearCookie('token', { path: '/', sameSite: 'none', secure: true })
+        .sendStatus(200)
+        .send('logout successfull');
+    } catch (error) {
+      next(error);
+    }
+};
+
 const createUser = async(req, res, next) => {
     try {
-        const { firstName, lastName, email, password, postalCode, adress } = req.body
+        const { firstName, lastName, email, password, postalCode, address } = req.body
+              
         if(!firstName || !lastName || !email || !password || !postalCode) throw ErrorStatus('missing fields', 400)
         
         const hash = await bcrypt.hash(password, 10);
@@ -38,33 +50,78 @@ const createUser = async(req, res, next) => {
             email,
             password: hash,
             postalCode,
-            adress
+            address
         })
 
         token = jwt.sign({ _id }, process.env.JWT_SECRET)
 
-        return res.cookie('token', token, { httpOnly: true }).sendStatus(201)
+        return res.sendStatus(201).send('user successfully registered')
     } catch (error) {
         next(error)
     }
 }
 
-const getOneUser = async (req, res, next) => {
+const getLoggedInUser = async (req, res, next) => {
     try {
         const foundUser = await UserCollection.findById(req.userId);
-        res.status(200).json(foundUser)
+        return res.status(200).json(foundUser)
     } catch (error) {
         next(error)
     } 
-} 
+}
+
+const getUserById = async (req, res, next) => {
+    try {
+        console.log(req.params.id)
+        const foundUser = await UserCollection.findById(req.params.id);
+        return res.status(200).json(foundUser)
+    } catch (error) {
+        next(error)
+    }
+}
+
+const getAllUsers = async (req, res, next) => {
+    try {
+        const allUsers = await UserCollection.find()
+        return res.status(200).json(allUsers)
+    } catch (error) {
+        next(error)
+    }
+}
 
 const updateUser = async (req, res, next) => {
     try{
-        const { firstName, lastName, address, postalCode } = req.body
+        const { 
+            firstName,
+            lastName,
+            address,
+            postalCode,
+            latitude,
+            longitude,
+            imgUrl,
+            userDescription,
+            interests,
+            skills,
+            bookMarks,
+            settings
+        } = req.body
         const { userId } = req
         const updatedUser = await UserCollection.findByIdAndUpdate(
             userId, 
-            { firstName, lastName, address, postalCode },
+            { 
+                firstName,
+                lastName,
+                address,
+                postalCode,
+                latitude,
+                longitude,
+                imgUrl,
+                userDescription,
+                interests,
+                skills,
+                bookMarks,
+                settings
+            },
             { new: true, runValidators: true }
         )
         return res.json(updatedUser)
@@ -74,9 +131,22 @@ const updateUser = async (req, res, next) => {
     }
   }
 
-  
+  const deleteUser = async (req, res, next) => {
+    try{
+        const { userId } = req
+        const deletedUser = await UserCollection.findByIdAndDelete(userId)
+        console.log('User has been deleted: ' + userId)
+        return res.json(deletedUser)
+    } catch (error) {
+        next(error)
+    }
+  }
 
 
 
+module.exports = {createUser, getLoggedInUser, login, updateUser, deleteUser, logout, getAllUsers, getUserById }
 
-module.exports = {createUser, getOneUser, login, updateUser}
+
+/*
+
+*/
