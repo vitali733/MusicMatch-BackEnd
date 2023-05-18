@@ -1,5 +1,6 @@
 const express = require('express')
-const userRoutes = require('./routes/userRoutes.js')
+const userRouter = require('./routes/userRoutes.js')
+const characteristicRouter = require('./routes/characteristicRoutes.js')
 const errorHandler = require('./middlewares/errorHandler.js')
 const app = express()
 const port = process.env.PORT || 4000
@@ -18,7 +19,8 @@ app.use(cors())
 app.use(cookieParser())
 
 //Routes
-app.use('/', userRoutes)
+app.use('/', userRouter)
+app.use('/', characteristicRouter)
 
 //Error handling
 app.use(errorHandler)

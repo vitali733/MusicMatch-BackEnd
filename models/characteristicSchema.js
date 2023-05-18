@@ -1,4 +1,3 @@
-const { SchemaType } = require('mongoose');
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
@@ -9,7 +8,7 @@ const characteristicSchema = new Schema({
     }]
   });
 
-  const UserCollection = mongoose.model('Characteristic', userSchema);
+  const CharacteristicCollection = mongoose.model('Characteristic', characteristicSchema);
 
-  module.exports = UserCollection
+  module.exports = CharacteristicCollection
 
