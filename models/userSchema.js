@@ -32,7 +32,7 @@ const userSchema = new Schema({
     postalCode: {
         type: String,
         required: [true, 'postal code required'],
-        match: [/^[0-9]{5}$/,'is not a valid postal code']
+        match: [/^[0-9]{5}$/,'is not a valid (german) postal code']
     },
     latitude: {
         type: Number,
