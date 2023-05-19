@@ -1,11 +1,11 @@
 const userRouter = require('express').Router()
 const { createUser, getLoggedInUser, login, updateUser, deleteUser, logout, getAllUsers, getUserById } = require('../controllers/userControllers.js')
 const  checkToken  = require('../middlewares/checkToken.js')
-const { checkErrors, checkId, checkRegister } = require('../middlewares/validateReq.js')
+const { checkErrors, checkId, checkRegister, checkLogin } = require('../middlewares/validateReq.js')
 
 
 //mounted on '/users' in server.js
-userRouter.route('/login').post(login)
+userRouter.route('/login').post(checkLogin,login)
 userRouter.route('/logout').get(checkToken, logout)
 userRouter.route('/register').post(checkRegister, createUser)
 userRouter.route('/users/all/').get(checkToken, getAllUsers)

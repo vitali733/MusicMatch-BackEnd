@@ -40,7 +40,7 @@ const createUser = async(req, res, next) => {
     try {
         const { firstName, lastName, email, password, postalCode, address } = req.body
               
-        if(!firstName || !lastName || !email || !password || !postalCode) throw ErrorStatus('missing fields', 400)
+        if(!firstName || !email || !password || !postalCode) throw new ErrorStatus('missing fields', 400)
         
         const hash = await bcrypt.hash(password, 10);
 
