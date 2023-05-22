@@ -3,7 +3,7 @@ const UserCollection = require('../models/userSchema');
 const ErrorStatus = require('../utils/errorStatus');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
-const { getGeoLocationByPostalCode, findUsersWithinCircle } = require('../utils/geoUtils.js')
+const { getGeoLocationByPostalCode, findUsersWithinRadius } = require('../utils/geoUtils.js')
 
 ///
 const login = async (req, res, next) => {
@@ -155,17 +155,11 @@ const deleteUser = async (req, res, next) => {
     }
   }
 
-
-
-const algorithmOne = async (req, res, next) => {
+//
+const getUsersWithinRadius = async (req, res, next) => {
     try {
-        console.log('executing algorithmOne')
-
-        //information for center and radius of search
         const {lat, lon, radius } = req.body
-            
-        const foundUsers = await findUsersWithinCircle( lat, lon, radius)
-      
+        const foundUsers = await findUsersWithinRadius( lat, lon, radius)
         return res.json(foundUsers)
     } catch (error) {
         next(error)
@@ -174,7 +168,7 @@ const algorithmOne = async (req, res, next) => {
 
 
 
-module.exports = {createUser, getLoggedInUser, login, updateUser, deleteUser, logout, getAllUsers, getUserById, algorithmOne }
+module.exports = {createUser, getLoggedInUser, login, updateUser, deleteUser, logout, getAllUsers, getUserById, getUsersWithinRadius }
 
 
 /*

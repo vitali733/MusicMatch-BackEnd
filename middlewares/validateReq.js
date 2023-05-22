@@ -57,7 +57,6 @@ const checkRegister = [
     checkErrors
   ];
 
-  
 const checkLogin = [
   body('email')
     .trim()
@@ -75,6 +74,23 @@ const checkLogin = [
   checkErrors
 ];
 
+const checkRadiusSearch = [
+  
+  body('lat')
+    .notEmpty()
+    .withMessage('missing field: lat/latitude')
+    .matches(/^[-+]?([1-8]?[0-9]{1}\.\d+|90(\.0+)?|0)$/)
+    .withMessage('not a valid latitude'),
+  body('lon')
+    .notEmpty()
+    .matches(/^[-+]?([1-7]?[0-9]{1,2}\.\d+|180(\.0+)?|0)$/)
+    .withMessage('not a valid longitude'),
+  body('radius')
+    .exists()
+    .withMessage('radius must be not falsy / undefined / null')
+    .isNumeric()
+    .withMessage('radius must be a number'),
+  checkErrors
+]
 
-
-module.exports = { checkErrors, checkId, checkRegister, checkLogin }
+module.exports = { checkErrors, checkId, checkRegister, checkLogin, checkRadiusSearch }
