@@ -3,7 +3,9 @@ const UserCollection = require('../models/userSchema');
 const ErrorStatus = require('../utils/errorStatus');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
+const { getGeoLocationByPostalCode, findUsersWithinCircle } = require('../utils/geoUtils.js')
 
+///
 const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
@@ -25,6 +27,7 @@ const login = async (req, res, next) => {
     }
 }
 
+///
 const logout = (req, res, next) => {
     try {
       res
@@ -36,6 +39,7 @@ const logout = (req, res, next) => {
     }
 };
 
+///
 const createUser = async(req, res, next) => {
     try {
         const { firstName, lastName, email, password, postalCode, address } = req.body
@@ -44,23 +48,28 @@ const createUser = async(req, res, next) => {
         
         const hash = await bcrypt.hash(password, 10);
 
+        const { lat, lon } = await getGeoLocationByPostalCode(postalCode, 'de')
+
         const { _id } = await UserCollection.create({
             firstName,
             lastName,
             email,
             password: hash,
             postalCode,
-            address
+            address,
+            latitude: lat,
+            longitude: lon
         })
 
         token = jwt.sign({ _id }, process.env.JWT_SECRET)
 
-        return res.sendStatus(201).send('user successfully registered')
+        return res.sendStatus(201)
     } catch (error) {
         next(error)
     }
 }
 
+///
 const getLoggedInUser = async (req, res, next) => {
     try {
         const foundUser = await UserCollection.findById(req.userId);
@@ -70,6 +79,7 @@ const getLoggedInUser = async (req, res, next) => {
     } 
 }
 
+///
 const getUserById = async (req, res, next) => {
     try {
         console.log(req.params.id)
@@ -80,6 +90,7 @@ const getUserById = async (req, res, next) => {
     }
 }
 
+///
 const getAllUsers = async (req, res, next) => {
     try {
         const allUsers = await UserCollection.find()
@@ -89,6 +100,7 @@ const getAllUsers = async (req, res, next) => {
     }
 }
 
+///
 const updateUser = async (req, res, next) => {
     try{
         const { 
@@ -131,7 +143,8 @@ const updateUser = async (req, res, next) => {
     }
   }
 
-  const deleteUser = async (req, res, next) => {
+///
+const deleteUser = async (req, res, next) => {
     try{
         const { userId } = req
         const deletedUser = await UserCollection.findByIdAndDelete(userId)
@@ -144,7 +157,24 @@ const updateUser = async (req, res, next) => {
 
 
 
-module.exports = {createUser, getLoggedInUser, login, updateUser, deleteUser, logout, getAllUsers, getUserById }
+const algorithmOne = async (req, res, next) => {
+    try {
+        console.log('executing algorithmOne')
+
+        //information for center and radius of search
+        const {lat, lon, radius } = req.body
+            
+        const foundUsers = await findUsersWithinCircle( lat, lon, radius)
+      
+        return res.json(foundUsers)
+    } catch (error) {
+        next(error)
+    }
+  }
+
+
+
+module.exports = {createUser, getLoggedInUser, login, updateUser, deleteUser, logout, getAllUsers, getUserById, algorithmOne }
 
 
 /*

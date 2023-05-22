@@ -1,5 +1,5 @@
 const userRouter = require('express').Router()
-const { createUser, getLoggedInUser, login, updateUser, deleteUser, logout, getAllUsers, getUserById } = require('../controllers/userControllers.js')
+const { createUser, getLoggedInUser, login, updateUser, deleteUser, logout, getAllUsers, getUserById, algorithmOne } = require('../controllers/userControllers.js')
 const  checkToken  = require('../middlewares/checkToken.js')
 const { checkErrors, checkId, checkRegister, checkLogin } = require('../middlewares/validateReq.js')
 
@@ -11,6 +11,10 @@ userRouter.route('/register').post(checkRegister, createUser)
 userRouter.route('/users/all/').get(checkToken, getAllUsers)
 userRouter.route('/users/me/').get(checkToken, getLoggedInUser).put(checkToken, updateUser).delete(checkToken, deleteUser)
 userRouter.route('/users/getuser/:id/').get(checkToken, checkId, getUserById)
+
+userRouter.route('/algorithmone/').get(algorithmOne)
+
+
 
 // TO DO: GET REQUEST userRouter route for getting all users back from the database [DONE]
 // TO DO: logout user [DONE]
