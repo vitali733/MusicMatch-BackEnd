@@ -75,7 +75,6 @@ const checkLogin = [
 ];
 
 const checkRadiusSearch = [
-  
   body('lat')
     .notEmpty()
     .withMessage('missing field: lat/latitude')
@@ -88,8 +87,8 @@ const checkRadiusSearch = [
   body('radius')
     .exists()
     .withMessage('radius must be not falsy / undefined / null')
-    .isNumeric()
-    .withMessage('radius must be a number'),
+    .isInt()
+    .withMessage('radius must be a an integer'),
   checkErrors
 ]
 
