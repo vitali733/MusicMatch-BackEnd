@@ -4,8 +4,6 @@ const  checkToken  = require('../middlewares/checkToken.js')
 const { checkId, checkRegister, checkLogin, checkRadiusSearch } = require('../middlewares/validateReq.js')
 const checkCharacteristics = require('../middlewares/checkCharacteristics.js')
 const { getAllCharacteristics } = require('../controllers/characteristicControllers.js')
-const updateLatLonIfOnlyPostalCode = require('../middlewares/updateLatLonIfOnlyPostalCode.js')
-
 
 
 

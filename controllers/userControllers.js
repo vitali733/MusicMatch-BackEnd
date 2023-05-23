@@ -3,7 +3,7 @@ const UserCollection = require('../models/userSchema');
 const ErrorStatus = require('../utils/errorStatus');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
-const { findUsersWithinRadius } = require('../utils/geoUtils.js')
+const { findUsersWithinRadius, getGeoLocationByPostalCode } = require('../utils/geoUtils.js')
 
 ///
 const login = async (req, res, next) => {
@@ -92,14 +92,16 @@ const getAllUsers = async (req, res, next) => {
     }
 }
 
-///
+//
 const updateUser = async (req, res, next) => {
     try{
-        const { 
+        let { 
             firstName,
             lastName,
             address,
             postalCode,
+            latitude,
+            longitude,
             imgUrl,
             userDescription,
             interests,
@@ -108,8 +110,15 @@ const updateUser = async (req, res, next) => {
             settings
         } = req.body
 
+        // if no geodata get and write them from postalCode
+        if( (!latitude || !longitude) && postalCode){  
+            const { lat, lon } = await getGeoLocationByPostalCode(postalCode)
+            latitude = lat
+            longitude = lon
+        }
+
         const { userId } = req
-        
+
         const updatedUser = await UserCollection.findByIdAndUpdate(
             userId, 
             { 
@@ -117,6 +126,8 @@ const updateUser = async (req, res, next) => {
                 lastName,
                 address,
                 postalCode,
+                latitude,
+                longitude,
                 imgUrl,
                 userDescription,
                 interests,
@@ -125,9 +136,10 @@ const updateUser = async (req, res, next) => {
                 settings
             },
             { new: true, runValidators: true }
-        )
+        )  
+
         return res.json(updatedUser)
-    
+         
     } catch (error) {
        next(error)
     }
