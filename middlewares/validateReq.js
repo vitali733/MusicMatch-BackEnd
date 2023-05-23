@@ -12,23 +12,6 @@ const checkErrors = (req, res, next) => {
   ];
 
 const checkRegister = [
-    body('firstName')
-      .trim()
-      .notEmpty()
-      .withMessage('No firstname sent')
-      .matches(/^[a-zA-Z\s.]*$/)
-      .withMessage('Name must contain only characters')
-      .isLength({ max: 25 })
-      .withMessage('Firstname must be up to 25 characters long'),
-    body('lastName')
-      .trim()
-      .optional()
-      .notEmpty()
-      .withMessage('No lastname sent')
-      .matches(/^[a-zA-Z\s.]*$/)
-      .withMessage('Lastname must contain only characters')
-      .isLength({ max: 25 })
-      .withMessage('Name must be up to 25 characters long'),
     body('email')
       .trim()
       .notEmpty()
@@ -42,18 +25,6 @@ const checkRegister = [
       //passowrd requires at least one digit. The password must be at least 6 characters long, but no more than 32.
       .matches(/^(?=.*[0-9]).{6,32}/)
       .withMessage('invalid password. must contain at least one digit. length: 6-32 characters.'),
-      body('address')
-        .trim()
-        .optional(),
-        //.matches(/^[a-zA-Z0-9.]*$/)
-        //.withMessage('address must not contain special characters beside dots "."'),
-    body('postalCode')
-      .trim()
-      .notEmpty()
-      .withMessage('No postalCode sent')
-      //!!!! this match currently only works in germany !!!!
-      .matches(/^[0-9]{5}$/)
-      .withMessage('not a valid (german) postal code'),
     checkErrors
   ];
 
@@ -91,5 +62,40 @@ const checkRadiusSearch = [
     .withMessage('radius must be a an integer'),
   checkErrors
 ]
+/*
+const checkUpdateUser = [
+body('firstName')
+  .optional()
+  .trim()
+  .notEmpty()
+  .withMessage('No firstname sent')
+  .matches(/^[a-zA-Z\s.]*$/)
+  .withMessage('Name must contain only characters')
+  .isLength({ max: 25 })
+  .withMessage('Firstname must be up to 25 characters long'),
+body('lastName')
+  .trim()
+  .optional()
+  .notEmpty()
+  .withMessage('No lastname sent')
+  .matches(/^[a-zA-Z\s.]*$/)
+  .withMessage('Lastname must contain only characters')
+  .isLength({ max: 25 })
+  .withMessage('Name must be up to 25 characters long'),
+body('address')
+  .trim()
+  .optional(),
+  //.matches(/^[a-zA-Z0-9.]*$/)
+  //.withMessage('address must not contain special characters beside dots "."'),
+body('postalCode')
+  .trim()
+  .notEmpty()
+  .withMessage('No postalCode sent')
+  //!!!! this match currently only works in germany !!!!
+  .matches(/^[0-9]{5}$/)
+  .withMessage('not a valid (german) postal code'),
+checkErrors
+]
+*/
 
 module.exports = { checkErrors, checkId, checkRegister, checkLogin, checkRadiusSearch }

@@ -5,7 +5,7 @@ const userSchema = new Schema({
     // String is shorthand for {type: String}
     firstName: {
         type: String,
-        required: [true , 'First Name is required']
+        default: null
     }, 
     lastName: {
         type: String,
@@ -31,7 +31,7 @@ const userSchema = new Schema({
     },
     postalCode: {
         type: String,
-        required: [true, 'postal code required'],
+        default: null,
         match: [/^[0-9]{5}$/,'is not a valid (german) postal code']
     },
     latitude: {

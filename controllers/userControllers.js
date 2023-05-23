@@ -3,7 +3,7 @@ const UserCollection = require('../models/userSchema');
 const ErrorStatus = require('../utils/errorStatus');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
-const { getGeoLocationByPostalCode, findUsersWithinRadius } = require('../utils/geoUtils.js')
+const { findUsersWithinRadius } = require('../utils/geoUtils.js')
 
 ///
 const login = async (req, res, next) => {
@@ -42,23 +42,15 @@ const logout = (req, res, next) => {
 ///
 const createUser = async(req, res, next) => {
     try {
-        const { firstName, lastName, email, password, postalCode, address } = req.body
+        const { email, password } = req.body
               
-        if(!firstName || !email || !password || !postalCode) throw new ErrorStatus('missing fields', 400)
+        if(!email || !password) throw new ErrorStatus('missing fields', 400)
         
         const hash = await bcrypt.hash(password, 10);
 
-        const { lat, lon } = await getGeoLocationByPostalCode(postalCode, 'de')
-
         const { _id } = await UserCollection.create({
-            firstName,
-            lastName,
             email,
-            password: hash,
-            postalCode,
-            address,
-            latitude: lat,
-            longitude: lon
+            password: hash
         })
 
         token = jwt.sign({ _id }, process.env.JWT_SECRET)
@@ -108,8 +100,6 @@ const updateUser = async (req, res, next) => {
             lastName,
             address,
             postalCode,
-            latitude,
-            longitude,
             imgUrl,
             userDescription,
             interests,
@@ -117,7 +107,9 @@ const updateUser = async (req, res, next) => {
             bookMarks,
             settings
         } = req.body
+
         const { userId } = req
+        
         const updatedUser = await UserCollection.findByIdAndUpdate(
             userId, 
             { 
@@ -125,8 +117,6 @@ const updateUser = async (req, res, next) => {
                 lastName,
                 address,
                 postalCode,
-                latitude,
-                longitude,
                 imgUrl,
                 userDescription,
                 interests,
@@ -166,9 +156,29 @@ const getUsersWithinRadius = async (req, res, next) => {
     }
   }
 
+  //
+  const getMatches = async (req, res, next) => {
+    try {
+
+        res.send('soon youll get matches!')
+    } catch (error) {
+        next(error)
+    }
+  }
 
 
-module.exports = {createUser, getLoggedInUser, login, updateUser, deleteUser, logout, getAllUsers, getUserById, getUsersWithinRadius }
+module.exports = {
+    createUser,
+     getLoggedInUser,
+      login,
+      updateUser,
+      deleteUser,
+      logout,
+      getAllUsers,
+      getUserById,
+      getUsersWithinRadius,
+      getMatches
+    }
 
 
 /*

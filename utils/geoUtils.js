@@ -6,9 +6,10 @@ const UserCollection = require('../models/userSchema');
 const geoKey = process.env.GEOAPIFY_KEY
 
 //
-const getGeoLocationByPostalCode = async(postalCode, countryCode) => {
+const getGeoLocationByPostalCode = async (postalCode) => {
     // arguments must be strings!   
     try {
+      countryCode = 'de'
       const response = await axios.get(`https://api.geoapify.com/v1/geocode/search?text=${postalCode}&lang=en&limit=10&type=postcode&filter=countrycode:${countryCode}&apiKey=${geoKey}`)
       return response.data.features[0].properties
     } catch (error) {
