@@ -14,7 +14,7 @@ const login = async (req, res, next) => {
         if(!email || !password) throw new ErrorStatus('missing login fields', 400)
 
         //.select('+password') is needed to get the field because in the userSchema it was defined with "select: false"
-        foundUser = await UserCollection.findOne({email}).select('+password')
+        const foundUser = await UserCollection.findOne({email}).select('+password')
         if(!foundUser) throw new ErrorStatus('User not found', 404);
 
         const compare = await bcrypt.compare(password, foundUser.password);
@@ -29,7 +29,7 @@ const login = async (req, res, next) => {
             sameSite: 'none',
             secure: true
         }).sendStatus(200)
-        
+
         return console.log('user login successful')
     } catch (error) {
         next(error)
