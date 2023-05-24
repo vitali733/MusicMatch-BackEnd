@@ -1,11 +1,43 @@
-{"characteristics": [
-    {"de": "Harmonika", "en": "Harmonica"},
-    {"de": "Djembe", "en": "Djembe"},
-    {"de": "Klavier", "en": "Piano"},
-    {"de": "Keyboard", "en": "Keyboard"},
-    {"de": "Ableton", "en": "Ableton"},
-    {"de": "Singen", "en": "Singen"},
-    {"de": "Drums", "en": "Drums"}
-    ] }
-
-
+[{
+  "_id": {
+    "$oid": "646decd34c6d1b8804c05199"
+  },
+  "de": "Harmonika",
+  "en": "Harmonica"
+},{
+  "_id": {
+    "$oid": "646ded454c6d1b8804c0519a"
+  },
+  "de": "Djembe",
+  "en": "Djembe"
+},{
+  "_id": {
+    "$oid": "646ded6e4c6d1b8804c0519b"
+  },
+  "de": "Klavier",
+  "en": "Piano"
+},{
+  "_id": {
+    "$oid": "646ded884c6d1b8804c0519c"
+  },
+  "de": "Keyboard",
+  "en": "Keyboard"
+},{
+  "_id": {
+    "$oid": "646dedb44c6d1b8804c0519d"
+  },
+  "de": "Ableton",
+  "en": "Ableton"
+},{
+  "_id": {
+    "$oid": "646dedcf4c6d1b8804c0519e"
+  },
+  "de": "Singen",
+  "en": "Sing"
+},{
+  "_id": {
+    "$oid": "646deded4c6d1b8804c0519f"
+  },
+  "de": "Drums",
+  "en": "Drums"
+}]

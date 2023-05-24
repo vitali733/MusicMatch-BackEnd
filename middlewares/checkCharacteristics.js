@@ -1,19 +1,21 @@
 const ErrorStatus = require('../utils/errorStatus.js')
-const characteristicsObj = require('../resources/characteristics.json')
+const CharacteristicCollection = require('../models/characteristicSchema.js')
 
-
-const checkCharacteristics = (req, res, next) => {
+const checkCharacteristics = async (req, res, next) => {
 
     try {
 
         if(req.body.interests || req.body.skills ){
-            const { characteristics } = characteristicsObj
-            const { interests, skills } = req.body    
+            const  characteristics  = await CharacteristicCollection.find()
+            const { interests, skills } = req.body   
+            
+            //now only for german language
+            const charArr = characteristics.map(e => e.de)
 
             if(req.body.interests){
               
                 for(let i = 0; i < interests.length; i++){
-                    if(!characteristics.includes(interests[i].name)){
+                    if(!charArr.includes(interests[i].name)){
                         throw new ErrorStatus ('interest not in characteristicsPool', 400)
                     } 
                 }
@@ -22,7 +24,7 @@ const checkCharacteristics = (req, res, next) => {
             if(req.body.skills){
                 
                 for(let i = 0; i < skills.length; i++){
-                    if(!characteristics.includes(skills[i].name)){
+                    if(!charArr.includes(skills[i].name)){
                         throw new ErrorStatus ('skill not in characteristicsPool', 400)
                     } 
                 }

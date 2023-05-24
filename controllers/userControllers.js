@@ -183,7 +183,7 @@ const getMatches = async (req, res, next) => {
 
 const testController = async (req, res, next) => {
     try {
-        console.log('testController')
+        console.log('started testController')
 
         const chars = await CharacteristicCollection.find()
 

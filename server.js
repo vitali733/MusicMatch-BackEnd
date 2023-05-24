@@ -1,5 +1,5 @@
 const express = require('express')
-const Router = require('./routes/userRoutes.js')
+const Router = require('./routes/routes.js')
 const errorHandler = require('./middlewares/errorHandler.js')
 const app = express()
 const port = process.env.PORT || 4000
@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(cors({
   origin: [process.env.FRONTEND_DEV, process.env.FRONTEND_DEPLOYED],
   credentials: true,
-    optionSuccessStatus:200
+  optionSuccessStatus:200
 }))
 app.use(cookieParser())
 
