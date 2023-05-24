@@ -23,14 +23,13 @@ const login = async (req, res, next) => {
         const token = jwt.sign({ _id: foundUser._id }, process.env.JWT_SECRET)
         console.log(token);
 
-        res.cookie('token', token, { 
+        return  res.cookie('token', token, { 
             httpOnly: true,
             maxAge: 1000 * 60 * 60,
             sameSite: 'none',
             secure: true
         }).sendStatus(200)
-
-        return console.log('user login successful')
+        
     } catch (error) {
         next(error)
     }
