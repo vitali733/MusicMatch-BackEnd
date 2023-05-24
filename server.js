@@ -14,7 +14,9 @@ connectDB()
 
 //generell middleware
 app.use(express.json());
-app.use(cors())
+app.use(cors({
+  "origin": "*",
+}))
 app.use(cookieParser())
 
 //Routes
