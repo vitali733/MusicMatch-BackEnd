@@ -1,6 +1,7 @@
 const ErrorStatus = require('../utils/errorStatus.js')
 const characteristicsObj = require('../resources/characteristics.json')
 
+
 const checkCharacteristics = (req, res, next) => {
 
     try {
@@ -35,3 +36,4 @@ const checkCharacteristics = (req, res, next) => {
 }
 
 module.exports = checkCharacteristics;
+

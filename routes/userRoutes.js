@@ -1,5 +1,17 @@
 const Router = require('express').Router()
-const { createUser, getLoggedInUser, login, updateUser, deleteUser, logout, getAllUsers, getUserById, getUsersWithinRadius, getMatches } = require('../controllers/userControllers.js')
+const { 
+    createUser,
+    getLoggedInUser,
+    login,
+    updateUser,
+    deleteUser,
+    logout,
+    getAllUsers,
+    getUserById,
+    getUsersWithinRadius,
+    getMatches,
+    testController
+} = require('../controllers/userControllers.js')
 const  checkToken  = require('../middlewares/checkToken.js')
 const { checkId, checkRegister, checkLogin, checkRadiusSearch } = require('../middlewares/validateReq.js')
 const checkCharacteristics = require('../middlewares/checkCharacteristics.js')
@@ -18,6 +30,8 @@ Router.route('/users/getuser/:id/').get(checkToken, checkId, getUserById)
 Router.route('/characteristics').get(getAllCharacteristics)
 
 Router.route('/matches').get(checkToken, getMatches)
+
+Router.route('/test').get(testController)
 
 
 

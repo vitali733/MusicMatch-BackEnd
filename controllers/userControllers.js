@@ -4,6 +4,7 @@ const ErrorStatus = require('../utils/errorStatus');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const { findUsersWithinRadius, getGeoLocationByPostalCode } = require('../utils/geoUtils.js')
+const CharacteristicCollection = require('../models/characteristicSchema.js')
 
 ///
 const login = async (req, res, next) => {
@@ -169,14 +170,26 @@ const getUsersWithinRadius = async (req, res, next) => {
   }
 
   //
-  const getMatches = async (req, res, next) => {
+const getMatches = async (req, res, next) => {
     try {
 
         res.send('soon youll get matches!')
     } catch (error) {
         next(error)
     }
-  }
+}
+
+const testController = async (req, res, next) => {
+    try {
+        console.log('testController')
+
+        const chars = await CharacteristicCollection.find()
+
+        res.send(chars)
+    } catch (error) {
+        next(error)
+    }
+}
 
 
 module.exports = {
@@ -189,7 +202,8 @@ module.exports = {
       getAllUsers,
       getUserById,
       getUsersWithinRadius,
-      getMatches
+      getMatches,
+      testController
     }
 
 

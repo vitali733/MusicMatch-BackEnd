@@ -1,1 +1,11 @@
-{"characteristics": ["Harmonika", "Djembe", "Klavier", "Keyboard", "Ableton", "Singen", "Drums"] }
+{"characteristics": [
+    {"de": "Harmonika", "en": "Harmonica"},
+    {"de": "Djembe", "en": "Djembe"},
+    {"de": "Klavier", "en": "Piano"},
+    {"de": "Keyboard", "en": "Keyboard"},
+    {"de": "Ableton", "en": "Ableton"},
+    {"de": "Singen", "en": "Singen"},
+    {"de": "Drums", "en": "Drums"}
+    ] }
+
+
