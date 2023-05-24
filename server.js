@@ -15,7 +15,9 @@ connectDB()
 //generell middleware
 app.use(express.json());
 app.use(cors({
-  origin: "*",
+  origin: [process.env.FRONTEND_DEV, process.env.FRONTEND_DEPLOYED],
+  credentials: true,
+    optionSuccessStatus:200
 }))
 app.use(cookieParser())
 

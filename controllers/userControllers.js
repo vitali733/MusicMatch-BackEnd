@@ -9,6 +9,7 @@ const { findUsersWithinRadius, getGeoLocationByPostalCode } = require('../utils/
 const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
+        console.log(req.body);
         if(!email || !password) throw new ErrorStatus('missing login fields', 400)
 
         //.select('+password') is needed to get the field because in the userSchema it was defined with "select: false"
@@ -19,6 +20,7 @@ const login = async (req, res, next) => {
         if(!compare) throw new ErrorStatus('password does not match', 401);
 
         const token = jwt.sign({ _id: foundUser._id }, process.env.JWT_SECRET)
+        console.log(token);
 
         res.cookie('token', token, { httpOnly: true }).sendStatus(200)
         return console.log('user login successful')
