@@ -29,7 +29,7 @@ const login = async (req, res, next) => {
             sameSite: 'none',
             secure: true
         }).sendStatus(200)
-        
+
     } catch (error) {
         next(error)
     }
@@ -168,8 +168,11 @@ const deleteUser = async (req, res, next) => {
 //
 const getUsersWithinRadius = async (req, res, next) => {
     try {
-        const {lat, lon, radius } = req.body
-        const foundUsers = await findUsersWithinRadius( lat, lon, radius)
+        const { latitude, longitude, settings} = await UserCollection.findById(req.userId);
+
+        if(!latitude || ! longitude) throw new ErrorStatus('no geo information for user found', 400)
+        
+        const foundUsers = await findUsersWithinRadius( latitude, longitude, settings.radius)
         return res.json(foundUsers)
     } catch (error) {
         next(error)
@@ -190,9 +193,21 @@ const testController = async (req, res, next) => {
     try {
         console.log('started testController')
 
-        const chars = await CharacteristicCollection.find()
+        const searchTag = 'Drums'
+        const matchType = 'ii'
 
-        res.send(chars)
+        const iiResult = []
+
+        const userIds = await UserCollection.find({'interests.name' : searchTag }, '_id' )
+
+        userIds.forEach(u => {
+            iiResult.push({_id: u._id, searchTag: searchTag, matchType: matchType })
+        })
+    
+      
+        
+
+        res.send(  iiResult )
     } catch (error) {
         next(error)
     }

@@ -60,9 +60,10 @@ const userSchema = new Schema({
     bookMarks: [{
         type: [Schema.Types.ObjectId, 'type is not a valid mongoDB object ID']
     }],
-    settings: [{
-        distance: String, darkMode: Boolean
-    }]
+    settings: {
+        radius: {type: Number, default: 10000}, darkMode: { type: Boolean, default: false}
+    }
+
   });
 
   const UserCollection = mongoose.model('User', userSchema);

@@ -45,6 +45,7 @@ const checkLogin = [
   checkErrors
 ];
 
+/*
 const checkRadiusSearch = [
   body('lat')
     .notEmpty()
@@ -62,6 +63,9 @@ const checkRadiusSearch = [
     .withMessage('radius must be a an integer'),
   checkErrors
 ]
+*/
+
+
 /*
 const checkUpdateUser = [
 body('firstName')
@@ -98,4 +102,4 @@ checkErrors
 ]
 */
 
-module.exports = { checkErrors, checkId, checkRegister, checkLogin, checkRadiusSearch }
+module.exports = { checkErrors, checkId, checkRegister, checkLogin }

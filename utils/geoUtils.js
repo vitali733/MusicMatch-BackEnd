@@ -20,11 +20,14 @@ const getGeoLocationByPostalCode = async (postalCode) => {
 //
 const checkUserWithinRadius = (centerLat, centerLon, targetLat, targetLon, radius) => {
   try {
-   const center = {lat: centerLat, lon: centerLon} //number
-   const targetLocation = {lat: targetLat, lon: targetLon} //number
-   //unit of radius:  meters
 
-    return insideCircle(targetLocation, center, radius)
+    if(targetLat && targetLon ){
+        //unit of radius:  meters
+        const center = {lat: centerLat, lon: centerLon} //number
+        const targetLocation = {lat: targetLat, lon: targetLon} //number
+        return insideCircle(targetLocation, center, radius)
+    } else {return false}
+
   } catch (error) {
     console.log(error)
   }
@@ -33,8 +36,9 @@ const checkUserWithinRadius = (centerLat, centerLon, targetLat, targetLon, radiu
 //
 const findUsersWithinRadius = async (centerLat, centerLon, radius) => {
   try {
+    
       const allUsers = await UserCollection.find()
-      const foundUsers = allUsers.filter(e => checkUserWithinRadius(centerLat, centerLon, e.latitude, e.longitude, radius) )
+      const foundUsers = allUsers.filter(u => checkUserWithinRadius(centerLat, centerLon, u.latitude, u.longitude, radius) )
       return foundUsers
   } catch (error) {
      console.log(error)
