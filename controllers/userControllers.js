@@ -3,8 +3,9 @@ const UserCollection = require('../models/userSchema');
 const ErrorStatus = require('../utils/errorStatus');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
-const { findUsersWithinRadius, getGeoLocationByPostalCode } = require('../utils/geoUtils.js')
-const CharacteristicCollection = require('../models/characteristicSchema.js')
+const { getGeoLocationByPostalCode } = require('../utils/geoUtils.js')
+const getMatchedUsers = require('../utils/matchUtils.js')
+
 
 ///
 const login = async (req, res, next) => {
@@ -166,14 +167,10 @@ const deleteUser = async (req, res, next) => {
   }
 
 //
-const getUsersWithinRadius = async (req, res, next) => {
-    try {
-        const { latitude, longitude, settings} = await UserCollection.findById(req.userId);
-
-        if(!latitude || ! longitude) throw new ErrorStatus('no geo information for user found', 400)
-        
-        const foundUsers = await findUsersWithinRadius( latitude, longitude, settings.radius)
-        return res.json(foundUsers)
+const getUsersAround = async (req, res, next) => {
+    try {    
+        if(!req.usersAround) throw new ErrorStatus('could not find users around', 500) 
+        return res.json(req.usersAround)
     } catch (error) {
         next(error)
     }
@@ -182,37 +179,72 @@ const getUsersWithinRadius = async (req, res, next) => {
   //
 const getMatches = async (req, res, next) => {
     try {
+        const { usersAround } = req   
+        const { interests, skills } = await UserCollection.findById(req.userId);
+        const resultArr = []
+        
+        if(interests.length === 0 && skills.length === 0) throw new ErrorStatus('authenticated User has neither interessts nor skills', 500)
+        
+        //ii match
+        interests.forEach(i => {
+            const arr = getMatchedUsers(usersAround, 'ii', i.name, 'interests');
+            arr.forEach(e => resultArr.push(e))
+        })
+        
+        //is match
+        interests.forEach(i => {
+            const arr = getMatchedUsers(usersAround, 'is', i.name, 'skills');
+            arr.forEach(e => resultArr.push(e))
+        })
+        
+        //si match
+        skills.forEach(i => {
+            const arr = getMatchedUsers(usersAround, 'si', i.name, 'interests');
+            arr.forEach(e => resultArr.push(e))
+        })
+        
+        //ss match
+        skills.forEach(i => {
+            const arr = getMatchedUsers(usersAround, 'ss', i.name, 'skills');
+            arr.forEach(e => resultArr.push(e))
+        })
+       
+        // get set of unique id´s from resultArr
+        const idSet = new Set(resultArr.map(m => m._id.toHexString()))
+        const uniqueIdArr = Array.from(idSet)
 
-        res.send('soon youll get matches!')
+        //built structure for final result array
+        const formattedResultArr = uniqueIdArr.map(i => {
+            return {
+                user: {
+                    _id: i,
+                    matches: null      
+                }
+            }
+        })
+
+        //fill final result array
+        formattedResultArr.forEach(i => {
+            i.user.matches = resultArr.filter(m => m._id == i.user._id ).map(m => {
+                return { matchType: m.matchType, searchTag: m.searchTag }
+            } )
+        }
+        )
+
+        return res.send( formattedResultArr )
     } catch (error) {
         next(error)
     }
 }
 
 const testController = async (req, res, next) => {
-    try {
-        console.log('started testController')
-
-        const searchTag = 'Drums'
-        const matchType = 'ii'
-
-        const iiResult = []
-
-        const userIds = await UserCollection.find({'interests.name' : searchTag }, '_id' )
-
-        userIds.forEach(u => {
-            iiResult.push({_id: u._id, searchTag: searchTag, matchType: matchType })
-        })
-    
-      
-        
-
-        res.send(  iiResult )
+    try {    
+        console.log('Testcontroller: Hello!')
+        return res.send('Testcontroller: Hello!')
     } catch (error) {
         next(error)
     }
 }
-
 
 module.exports = {
     createUser,
@@ -223,7 +255,7 @@ module.exports = {
       logout,
       getAllUsers,
       getUserById,
-      getUsersWithinRadius,
+      getUsersAround,
       getMatches,
       testController
     }
