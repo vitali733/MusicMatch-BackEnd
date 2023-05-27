@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const Chat = require("../models/chatModel");
-const User = require("../models/userSchema");
+const UserCollection = require("../models/userSchema");
 
 //@description     Create or fetch One to One Chat
 //@route           POST /api/chat/
@@ -8,7 +8,7 @@ const User = require("../models/userSchema");
 const accessChat = asyncHandler(async (req, res) => {
   const { userId } = req.body;
 
-  //does the userId / user_id get sent? 
+  //does the userId / user_id get sent in the checkToken middleware?
 
   if (!userId) {
     console.log("UserId param not sent with request");
@@ -25,7 +25,7 @@ const accessChat = asyncHandler(async (req, res) => {
     .populate("users", "-password")
     .populate("latestMessage");
 
-  isChat = await User.populate(isChat, {
+  isChat = await UserCollection.populate(isChat, {
     path: "latestMessage.sender",
     select: "firstName lastName imgUrl email",
   });
