@@ -8,18 +8,18 @@ const cors = require('cors')
 const cookieParser = require('cookie-parser')
 
 
-//app.use(cors({origin: ['http://localhost:5173/','frontenddeplayhost']}))
-
 connectDB()
 
 //generell middleware
 app.use(express.json());
 app.use(cors({
-  origin: [process.env.FRONTEND_DEV, process.env.FRONTEND_DEPLOYED],
-  credentials: true,
-  optionSuccessStatus:200
+  origin: [process.env.FRONTEND_DEV, process.env.FRONTEND_DEPLOYED,
+    /https:\/\/music-match1\.netlify\.app/],
+  credentials: true
+  //optionSuccessStatus:200
 }))
 app.use(cookieParser())
+
 
 //Routes
 app.use('/', Router)
@@ -28,5 +28,5 @@ app.use('/', Router)
 app.use(errorHandler)
 
 app.listen(port, () => {
-  console.log(`App listening on port ${port}`)
+  console.log(`server listening on port ${port}`)
 })

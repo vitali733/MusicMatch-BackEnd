@@ -10,8 +10,8 @@ const getMatchedUsers = require('../utils/matchUtils.js')
 ///
 const login = async (req, res, next) => {
     try {
+        console.log('executing controller login')
         const { email, password } = req.body;
-        console.log(req.body);
         if(!email || !password) throw new ErrorStatus('missing login fields', 400)
 
         //.select('+password') is needed to get the field because in the userSchema it was defined with "select: false"
@@ -212,6 +212,8 @@ const getMatches = async (req, res, next) => {
         // get set of unique id´s from resultArr
         const idSet = new Set(resultArr.map(m => m._id.toHexString()))
         const uniqueIdArr = Array.from(idSet)
+
+        //--- formating matachresult ---
 
         //built structure for final result array
         const formattedResultArr = uniqueIdArr.map(i => {
