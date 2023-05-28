@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const { getGeoLocationByPostalCode } = require('../utils/geoUtils.js')
 const getMatchedUsers = require('../utils/matchUtils.js')
+const asyncHandler = require("express-async-handler")
 
 
 ///
@@ -26,7 +27,7 @@ const login = async (req, res, next) => {
 
         return  res.cookie('token', token, { 
             httpOnly: true,
-            maxAge: 1000 * 60 * 60,
+            maxAge: 1000 * 60 * 60 * 12,
             sameSite: 'none',
             secure: true
         }).sendStatus(200)
@@ -101,7 +102,26 @@ const getAllUsers = async (req, res, next) => {
     }
 }
 
-//
+// allUsers for user search // don't find yourself: .find({ _id: { $ne: req.users._id } }) but can't access req.users._id right now might be auth issue
+//api/user?search=...
+
+const allUsers = asyncHandler(async (req, res) => {
+    const keyword = req.query.search
+      ? {
+          $or: [
+            { firstName: { $regex: req.query.search, $options: "i" } },
+            { lastName: { $regex: req.query.search, $options: "i" } },
+            { email: { $regex: req.query.search, $options: "i" } },
+          ],
+        }
+      : {};
+  
+    const users = await UserCollection.find(keyword);
+    res.send(users);
+  });
+
+  ////
+
 const updateUser = async (req, res, next) => {
     try{
         let { 
@@ -256,6 +276,7 @@ module.exports = {
       deleteUser,
       logout,
       getAllUsers,
+      allUsers,
       getUserById,
       getUsersAround,
       getMatches,
