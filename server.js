@@ -34,7 +34,9 @@ const server = app.listen(port, () => {
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://localhost:3000",
+    origin: [process.env.FRONTEND_DEV, process.env.FRONTEND_DEPLOYED,
+    /https:\/\/music-match1\.netlify\.app/],
+  credentials: true
     // credentials: true,
   },
 });
