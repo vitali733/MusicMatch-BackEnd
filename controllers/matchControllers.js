@@ -20,11 +20,6 @@ const CharacteristicCollection = require('../models/characteristicSchema.js')
 //IMPLEMENT MATCH ALGORITHM ii
 
 
-
-
-
-
-
 const getLoggedInUser = async (req, res, next) => {
     try {
         const foundUser = await UserCollection.findById(req.userId);
