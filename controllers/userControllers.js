@@ -196,7 +196,7 @@ const getUsersAround = async (req, res, next) => {
     }
   }
 
-  //
+//
 const getMatches = async (req, res, next) => {
     try {
         const { usersAround } = req   
@@ -252,6 +252,9 @@ const getMatches = async (req, res, next) => {
             } )
         }
         )
+        
+        // sort for decending amount of matches
+        formattedResultArr.sort((a, b) => b.user.matches.length - a.user.matches.length);
 
         return res.send( formattedResultArr )
     } catch (error) {
