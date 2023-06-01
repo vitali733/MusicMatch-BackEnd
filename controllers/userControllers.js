@@ -219,8 +219,11 @@ const updateUser = async (req, res, next) => {
 
   const deleteSkinTerest = async (req, res, next) => {
     try{
+        console.log('deleteSkinterest fired')
         const { userId } = req
         const { interest, skill } = req.body
+
+        console.log('deleted skill: ' + skill)
 
         if(!interest && !skill) throw new ErrorStatus('no interest or skill provided',400)      
                 
