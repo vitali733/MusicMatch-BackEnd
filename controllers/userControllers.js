@@ -120,8 +120,7 @@ const allUsers = asyncHandler(async (req, res) => {
     res.send(users);
   });
 
-  ////
-
+//
 const updateUser = async (req, res, next) => {
     try{
         let { 
@@ -168,6 +167,97 @@ const updateUser = async (req, res, next) => {
         )  
 
         return res.json(updatedUser)
+         
+    } catch (error) {
+       next(error)
+    }
+  }
+
+  const addSkinTerest = async (req, res, next) => {
+    try{
+        const { userId } = req
+        const { interest, skill, description, level } = req.body
+        if(!interest && !skill) throw new ErrorStatus('no interest or skill provided',400)             
+        const { interests, skills } = await UserCollection.findById(req.userId);
+
+        if(interest){
+            if(interests.some(i=>i.name === interest)) throw new ErrorStatus('interest already exists',400)      
+
+            interests.push({"name": interest, "description": description?description:''})
+           
+            const updatedUser = await UserCollection.findByIdAndUpdate(
+                userId, 
+                { 
+                    interests
+                },
+                { new: true, runValidators: true }
+            )  
+
+            return res.status(200).json(updatedUser)
+        }
+
+        if(skill){
+            if(skills.some(i=>i.name === skill)) throw new ErrorStatus('skill already exists',400)      
+    
+            skills.push({"name": skill, "description": description?description:'', "level": level?level:1})
+           
+            const updatedUser = await UserCollection.findByIdAndUpdate(
+                userId, 
+                { 
+                    skills
+                },
+                { new: true, runValidators: true }
+            )  
+
+            return res.status(200).json(updatedUser)
+        }                
+         
+    } catch (error) {
+       next(error)
+    }
+  }
+
+  const deleteSkinTerest = async (req, res, next) => {
+    try{
+        const { userId } = req
+        const { interest, skill } = req.body
+
+        if(!interest && !skill) throw new ErrorStatus('no interest or skill provided',400)      
+                
+        let { interests, skills } = await UserCollection.findById(req.userId);
+
+        if(interest){
+            if(!interests.some(i=>i.name === interest)) throw new ErrorStatus('cant be deleted because interest does not exist',400)      
+           
+            interests = interests.filter(i => i.name !== interest)
+           
+            const updatedUser = await UserCollection.findByIdAndUpdate(
+                userId, 
+                { 
+                    interests
+                },
+                { new: true, runValidators: true }
+            )  
+            
+            return res.status(200).json(updatedUser)
+        }
+
+        if(skill){
+            if(!skills.some(i=>i.name === skill)) throw new ErrorStatus('skill already exists',400)  
+            
+            skills = skills.filter(i => i.name !== skill)
+               
+            const updatedUser = await UserCollection.findByIdAndUpdate(
+                userId, 
+                { 
+                    skills
+                },
+                { new: true, runValidators: true }
+            )  
+
+            return res.status(200).json(updatedUser)
+        }                
+        
          
     } catch (error) {
        next(error)
@@ -283,7 +373,9 @@ module.exports = {
       getUserById,
       getUsersAround,
       getMatches,
-      testController
+      testController,
+      addSkinTerest,
+      deleteSkinTerest
     }
 
 

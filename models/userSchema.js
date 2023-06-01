@@ -56,7 +56,14 @@ const userSchema = new Schema({
         name: String, description: String
     }],
     skills: [{
-        name: String, level: Number,  description: String
+        name: String, 
+        level: {
+            type: Number,
+            default: 1,
+            min: 1,
+            max: 5
+        },  
+        description: String
     }],
     bookMarks: [{
         type: [Schema.Types.ObjectId, 'type is not a valid mongoDB object ID']
