@@ -44,7 +44,8 @@ const userSchema = new Schema({
     },
     imgUrl: {
         type: String,
-        default: null
+        required: true,
+        default: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
     },
     userDescription: {
         type: String,
