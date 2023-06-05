@@ -52,15 +52,23 @@ const logout = (req, res, next) => {
 ///
 const createUser = async(req, res, next) => {
     try {
-        const { email, password } = req.body
+        const { email, password, firstName, postalCode, lastName } = req.body
               
-        if(!email || !password) throw new ErrorStatus('missing fields', 400)
+        if(!email || !password || !firstName || !postalCode) throw new ErrorStatus('missing fields', 400)
         
         const hash = await bcrypt.hash(password, 10);
 
+        const { lat, lon } = await getGeoLocationByPostalCode(postalCode)
+           
+        
+
         const { _id } = await UserCollection.create({
             email,
-            password: hash
+            password: hash,
+            firstName,
+            lastName,
+            latitude: lat,
+            longitude: lon
         })
 
         token = jwt.sign({ _id }, process.env.JWT_SECRET)
