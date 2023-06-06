@@ -6,6 +6,7 @@ const checkSkinTerest = async (req, res, next) => {
     try {
                 
         const { interest, skill } = req.body   
+        console.log(`checkSkinTerest skill: (${skill})`)
         if(!interest && !skill) throw new ErrorStatus('no interest or skill sent',400)
 
         const  characteristics  = await CharacteristicCollection.find()
@@ -21,7 +22,6 @@ const checkSkinTerest = async (req, res, next) => {
             if(!charArr.includes(skill)) throw new ErrorStatus('unknown skill',400)
         }
         
-
         next();
     } catch (error) {
         next(error);

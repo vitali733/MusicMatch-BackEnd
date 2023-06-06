@@ -67,9 +67,4 @@ Router.route("/api/message").post(checkToken, sendMessage);
 
 
 
-
-
-
-
-
 module.exports = Router
