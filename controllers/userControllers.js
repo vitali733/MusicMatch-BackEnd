@@ -67,13 +67,19 @@ const createUser = async(req, res, next) => {
             password: hash,
             firstName,
             lastName,
+            postalCode,
             latitude: lat,
             longitude: lon
         })
 
         token = jwt.sign({ _id }, process.env.JWT_SECRET)
 
-        return res.sendStatus(201)
+        return res.cookie('token', token, { 
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 12,
+            sameSite: 'none',
+            secure: true
+        }).sendStatus(201)
     } catch (error) {
         next(error)
     }
