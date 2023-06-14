@@ -1,6 +1,4 @@
-require('dotenv').config()
 const CharacteristicCollection = require('../models/characteristicSchema');
-const ErrorStatus = require('../utils/errorStatus');
 
 
 const getAllCharacteristics = async (req, res, next) => {
@@ -13,11 +11,7 @@ const getAllCharacteristics = async (req, res, next) => {
 }
 
 
-  
 
 module.exports = { getAllCharacteristics }
 
 
-/*
-
-*/
