@@ -13,7 +13,7 @@ const checkToken = (req, res, next) => {
         // append userId to req object
         req.userId = _id;
         req.user = { _id };
-        console.log(`this is the user._id:${req.user._id}`);
+      
         next();
     } catch (error) {
         next(error);
