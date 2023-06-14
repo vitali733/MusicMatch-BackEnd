@@ -189,6 +189,7 @@ const updateUser = async (req, res, next) => {
 
   const addSkinTerest = async (req, res, next) => {
     try{
+        console.log('addSkinTerest')
         const { userId } = req
         const { interest, skill, description, level } = req.body
         if(!interest && !skill) throw new ErrorStatus('no interest or skill provided',400)             
