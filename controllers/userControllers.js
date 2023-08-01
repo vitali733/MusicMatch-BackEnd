@@ -64,6 +64,7 @@ const createUser = async (req, res, next) => {
     const hash = await bcrypt.hash(password, 10);
 
     const { lat, lon } = await getGeoLocationByPostalCode(postalCode);
+    console.log('API Response from getGeoLocationByPostalCode:', lat, lon);
 
     const { _id } = await UserCollection.create({
       email,
