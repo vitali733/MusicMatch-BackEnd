@@ -5,7 +5,7 @@ const UserCollection = require('../models/userSchema');
 
 const geoKey = process.env.GEOAPIFY_KEY
 
-//
+/*
 const getGeoLocationByPostalCode = async (postalCode) => {
     // arguments must be strings!   
     try {
@@ -17,7 +17,28 @@ const getGeoLocationByPostalCode = async (postalCode) => {
     }
   }
 
-//
+*/
+
+const getGeoLocationByPostalCode = async (postalCode) => {
+    try {
+        const countryCode = 'de';
+        const response = await axios.get(`https://api.geoapify.com/v1/geocode/search?text=${postalCode}&lang=en&limit=10&type=postcode&filter=countrycode:${countryCode}&apiKey=${geoKey}`);
+        
+        if (response.data.features.length === 0) {
+            throw new Error('Postal code not found or invalid.');
+        }
+
+        const { lat, lon } = response.data.features[0].properties;
+        return { lat, lon };
+    } catch (error) {
+        console.error(error);
+        throw new Error('Error fetching geographic coordinates.');
+    }
+};
+
+
+
+
 const checkUserWithinRadius = (centerLat, centerLon, targetLat, targetLon, radius) => {
   try {
 
