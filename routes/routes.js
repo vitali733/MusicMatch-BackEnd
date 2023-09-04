@@ -2,6 +2,7 @@ const Router = require("express").Router();
 const {
   createUser,
   getLoggedInUser,
+  checkMailToken,
   login,
   updateUser,
   deleteUser,
@@ -47,6 +48,8 @@ Router.route("/characteristics").get(getAllCharacteristics);
 Router.route("/users/login").post(checkLogin, login);
 Router.route("/users/logout").get(checkToken, logout);
 Router.route("/users/register").post(checkRegister, createUser);
+Router.route("/verify").put(checkMailToken);
+
 Router.route("/users/all/").get(checkToken, getAllUsers);
 Router.route("/users/me/")
   .get(checkToken, getLoggedInUser)

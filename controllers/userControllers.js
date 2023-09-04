@@ -1,13 +1,16 @@
-require("dotenv").config();
+const dotenv = require("dotenv")
+dotenv.config();
 const UserCollection = require("../models/userSchema");
 const ErrorStatus = require("../utils/errorStatus");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { getGeoLocationByPostalCode } = require("../utils/geoUtils.js");
+const { getGeoLocationByPostalCode } = require("../utils/geoUtils");
+const sendEmailVerificationLink = require("../utils/mailer");
 
 const asyncHandler = require("express-async-handler");
 
-///
+/// LOGIN
+
 const login = async (req, res, next) => {
   try {
     console.log("executing controller: login");
@@ -24,7 +27,7 @@ const login = async (req, res, next) => {
     if (!compare) throw new ErrorStatus("password does not match", 401);
 
     const token = jwt.sign({ _id: foundUser._id }, process.env.JWT_SECRET);
-    console.log(token);
+    
 
     return res
       .cookie("token", token, {
@@ -39,7 +42,8 @@ const login = async (req, res, next) => {
   }
 };
 
-///
+/// LOGOUT
+
 const logout = (req, res, next) => {
   try {
     console.log("executing controller: logout");
@@ -52,10 +56,11 @@ const logout = (req, res, next) => {
   }
 };
 
-///
+/// CREATE USER 
+
+
 const createUser = async (req, res, next) => {
   try {
-    console.log("executing controller: logout");
     const { email, password, firstName, postalCode, lastName } = req.body;
 
     if (!email || !password || !firstName || !postalCode)
@@ -74,9 +79,13 @@ const createUser = async (req, res, next) => {
       postalCode,
       latitude: lat,
       longitude: lon,
+      verifiedEmail: false,
     });
 
     token = jwt.sign({ _id }, process.env.JWT_SECRET);
+    console.log(token);
+    
+    await sendEmailVerificationLink(email, token);
 
     return res
       .cookie("token", token, {
@@ -90,6 +99,44 @@ const createUser = async (req, res, next) => {
     next(error);
   }
 };
+
+///// VERIFY USER EMAIL VIA USER TOKEN SENT TO EMAIL AS QUERY PARAMETER OF LINK TO /users/verify
+
+const checkMailToken = async (req, res) => {
+  const mailToken = req.query.token;
+  console.log(mailToken)
+  if (!mailToken) return res.sendStatus(401);
+
+  try {
+    // Verify the mailToken to get the user's _id
+    const decodedToken = jwt.verify(mailToken, process.env.JWT_SECRET);
+    
+    // Find the user by _id
+    const user = await UserCollection.findById(decodedToken._id);
+  
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if the user's email is already verified
+    if (user.verifiedEmail) {
+      return res.status(400).json({ message: 'Email is already verified' });
+    }
+
+    // Update the user's email verification status
+    user.verifiedEmail = true;
+    await user.save();
+
+    return res.status(200).json({ message: 'Email verified successfully' });
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
+
+
 
 ///
 const getLoggedInUser = async (req, res, next) => {
@@ -327,6 +374,7 @@ const getUsersAround = async (req, res, next) => {
 
 module.exports = {
   createUser,
+  checkMailToken,
   getLoggedInUser,
   login,
   updateUser,
